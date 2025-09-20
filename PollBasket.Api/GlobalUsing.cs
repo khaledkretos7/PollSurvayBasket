@@ -7,3 +7,4 @@ global using System.Reflection;
 global using Microsoft.AspNetCore.Mvc;
 global using FluentValidation;
 global using FluentValidation.AspNetCore;
+global using PollBasket.Api;
