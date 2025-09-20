@@ -1,8 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using PollBasket.Api.Entities;
-using PollBasket.Api.Services;
-
+﻿
 namespace PollBasket.Api.Controllers;
 [Route("api/[controller]")]
 [ApiController]
@@ -13,27 +9,30 @@ public class PollsController(IPollServices pollServices) : ControllerBase
     public IActionResult GetAll() 
     {
         var polls = _PollServices.GetAll();
-        return Ok(polls);
+        var response = polls.Adapt<IEnumerable<PollResponse>>();
+        return Ok(response);
     }
 
     [HttpGet("{id}")]
     public IActionResult Get(int id)
     {
         var currentPoll=_PollServices.GetById(id);
-        return currentPoll is null ? NotFound() : Ok(currentPoll);
+        var response=currentPoll.Adapt<PollResponse>();
+        return currentPoll is null ? NotFound() : Ok(response);
     }
 
     [HttpPost("")]
-    public IActionResult Add(Poll request) 
+    public IActionResult Add(CreatePollRequest request) 
     {
-        var newpoll = _PollServices.add(request);
 
-        return CreatedAtAction(nameof(Get), new { id = newpoll.Id }, newpoll);
+        var newpoll = _PollServices.add(request.Adapt<Poll>());
+
+        return CreatedAtAction(nameof(Get), new { id = newpoll.Id }, newpoll.Adapt<PollResponse>());
     }
     [HttpPut("")]
-    public IActionResult Update(Poll request) 
+    public IActionResult Update(CreatePollRequest request) 
     {
-        var isUpdated=_PollServices.Update(request);
+        var isUpdated=_PollServices.Update(request.Adapt<Poll>());
 
         if(!isUpdated)
             return NotFound();
@@ -41,11 +40,11 @@ public class PollsController(IPollServices pollServices) : ControllerBase
         return Ok(isUpdated);
     }
     [HttpDelete("{id}")]
-    public IActionResult Delete(int id)
+    public IActionResult Delete(int id) 
     {
-        var isUpdated = _PollServices.Delete(id);
+        var isdeleted = _PollServices.Delete(id);
 
-        if (!isUpdated)
+        if (!isdeleted)
             return NotFound();
 
         return Ok();

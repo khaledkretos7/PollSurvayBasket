@@ -1,1 +1,9 @@
-﻿
+﻿global using Mapster;
+global using PollBasket.Api.Contracts.Poll;
+global using PollBasket.Api.Entities;
+global using MapsterMapper;
+global using PollBasket.Api.Services;
+global using System.Reflection;
+global using Microsoft.AspNetCore.Mvc;
+global using FluentValidation;
+global using FluentValidation.AspNetCore;
