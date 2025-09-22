@@ -1,9 +1,8 @@
 ﻿namespace PollBasket.Api.Contracts.Poll;
 
-public record PollResponse(
-    int id 
-    ,string Title 
-    ,string Summary,
+public record PollRequest(
+     string Title
+    , string Summary,
     bool IsPublished,
     DateOnly StartsAt,
     DateOnly EndsAt

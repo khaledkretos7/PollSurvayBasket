@@ -1,14 +1,25 @@
 ﻿
+using Microsoft.EntityFrameworkCore;
+using PollBasket.Api.Persistence;
+
 namespace PollBasket.Api;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddDependencies(this IServiceCollection services) 
+    public static IServiceCollection AddDependencies(this IServiceCollection services ,IConfiguration configuration) 
     {
 
        services.AddControllers();
-       services
-            .AddSwaggerServices()
+
+        var connectioString = configuration.GetConnectionString("DefaultConnection") ??
+            throw new InvalidOperationException("invalidConnections");
+
+        services.AddDbContext<ApplicationDbContext>(options => 
+        options.UseSqlServer(connectioString));
+
+
+        services
+             .AddSwaggerServices()
             .AddMapsterconfig()
             .fluentValidations();
 

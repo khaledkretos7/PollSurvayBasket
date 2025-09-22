@@ -1,7 +1,11 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using PollBasket.Api;
+using PollBasket.Api.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDependencies();
+builder.Services.AddDependencies(builder.Configuration);
+
 
 var app = builder.Build();
 

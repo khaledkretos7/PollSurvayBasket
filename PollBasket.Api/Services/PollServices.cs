@@ -1,48 +1,50 @@
-﻿using PollBasket.Api.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using PollBasket.Api.Entities;
+using PollBasket.Api.Persistence;
 
 namespace PollBasket.Api.Services;
 
-public class PollServices : IPollServices
+public class PollServices(ApplicationDbContext context) : IPollServices
 {
-    private static readonly List<Poll> _polls = [
-        new Poll
-        {
-            Id = 1,
-            Title = "Title -1",
-            Description="the description"
-        }
-        ];
+    private readonly ApplicationDbContext _context=context;
 
-    public Poll add(Poll poll)
+ 
+    public async Task<IEnumerable<Poll>> GetAllAsync() =>
+        await _context.polls.AsNoTracking().ToListAsync();
+
+    public async Task<Poll> GetByIdAsync(int id) =>
+          await _context.polls.FindAsync(id);
+
+    public async Task<Poll> AddAsync(Poll poll, CancellationToken cancellationToken = default!)
     {
-        poll.Id = _polls.Count + 1;
-       _polls.Add(poll);
+        await _context.AddAsync(poll);
+        await _context.SaveChangesAsync(cancellationToken);
         return poll;
     }
 
-    public bool Delete(int id)
+    public async Task<bool> UpdateAsync(int id,Poll poll, CancellationToken cancellationToken = default)
     {
-        var currentPoll = GetById(id);
-        if (currentPoll is null)
+        var curr=await GetByIdAsync(id);
+
+        if (curr is null) 
             return false;
 
-       _polls.Remove(currentPoll);
-        return true;
+        curr.Title = poll.Title;
+        curr.Summary = poll.Summary;
+        curr.EndsAt = poll.EndsAt;
+        curr.StartsAt = poll.StartsAt;
+          
+        return true;  
     }
 
-    public IEnumerable<Poll> GetAll()=> _polls;
-
-    public Poll? GetById(int id)=> _polls.SingleOrDefault(x=>x.Id==id);
-
-    public bool Update(Poll poll)
+    public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken)
     {
-        var currentPoll = GetById(poll.Id);
-        if (poll is null) 
+        var isDelted = await GetByIdAsync(id);
+        if(isDelted is null)
             return false;
 
-        currentPoll.Description = poll.Description;
-        currentPoll.Title = poll.Title;
-
+         _context.Remove(isDelted);
+        await _context.SaveChangesAsync(cancellationToken);
         return true;
     }
 }
