@@ -1,13 +1,15 @@
-﻿using PollBasket.Api.Entities;
+﻿using PollBasket.Api.Abstractions;
+using PollBasket.Api.Entities;
 
 namespace PollBasket.Api.Services;
 
 public interface IPollServices
 {
-    Task<IEnumerable<Poll>>GetAllAsync();
-   Task<Poll>? GetByIdAsync(int id);
-   Task<Poll> AddAsync(Poll poll,CancellationToken cancellationToken=default!);
-    public Task<bool> UpdateAsync(int id, Poll poll, CancellationToken cancellationToken = default!);
-    public Task<bool> DeleteAsync(int id,CancellationToken cancellationToken=default!);
+    Task<IEnumerable<Poll>> GetAllAsync(CancellationToken cancellationToken = default);
+    Task<Result<PollResponse>> GetAsync(int id, CancellationToken cancellationToken = default);
+    Task<PollResponse> AddAsync(PollRequest request, CancellationToken cancellationToken = default);
+    Task<Result> UpdateAsync(int id, PollRequest request, CancellationToken cancellationToken = default);
+    Task<Result> DeleteAsync(int id, CancellationToken cancellationToken = default);
+    Task<Result> TogglePublishStatusAsync(int id, CancellationToken cancellationToken = default);
 
 }

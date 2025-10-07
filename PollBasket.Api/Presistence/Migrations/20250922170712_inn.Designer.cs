@@ -3,17 +3,19 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using PollBasket.Api.Presistence;
 
 #nullable disable
 
 namespace PollBasket.Api.Presistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250922170712_inn")]
+    partial class inn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -238,13 +240,6 @@ namespace PollBasket.Api.Presistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedByID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<DateOnly>("EndsAt")
                         .HasColumnType("date");
 
@@ -264,20 +259,10 @@ namespace PollBasket.Api.Presistence.Migrations
                         .HasMaxLength(1500)
                         .HasColumnType("nvarchar(1500)");
 
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UpdatedByID")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("CreatedByID");
 
                     b.HasIndex("Id")
                         .IsUnique();
-
-                    b.HasIndex("UpdatedByID");
 
                     b.ToTable("polls");
                 });
@@ -331,60 +316,6 @@ namespace PollBasket.Api.Presistence.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("PollBasket.Api.Entities.ApplicationUser", b =>
-                {
-                    b.OwnsMany("PollBasket.Api.Entities.RefreshToken", "RefreshTokens", b1 =>
-                        {
-                            b1.Property<string>("UserId")
-                                .HasColumnType("nvarchar(450)");
-
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("int");
-
-                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
-
-                            b1.Property<DateTime>("CreatedOn")
-                                .HasColumnType("datetime2");
-
-                            b1.Property<DateTime>("ExpireOn")
-                                .HasColumnType("datetime2");
-
-                            b1.Property<DateTime?>("RevokedOn")
-                                .HasColumnType("datetime2");
-
-                            b1.Property<string>("Token")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.HasKey("UserId", "Id");
-
-                            b1.ToTable("RefreshTokens", (string)null);
-
-                            b1.WithOwner()
-                                .HasForeignKey("UserId");
-                        });
-
-                    b.Navigation("RefreshTokens");
-                });
-
-            modelBuilder.Entity("PollBasket.Api.Entities.Poll", b =>
-                {
-                    b.HasOne("PollBasket.Api.Entities.ApplicationUser", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedByID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PollBasket.Api.Entities.ApplicationUser", "UpdatedBy")
-                        .WithMany()
-                        .HasForeignKey("UpdatedByID");
-
-                    b.Navigation("CreatedBy");
-
-                    b.Navigation("UpdatedBy");
                 });
 #pragma warning restore 612, 618
         }

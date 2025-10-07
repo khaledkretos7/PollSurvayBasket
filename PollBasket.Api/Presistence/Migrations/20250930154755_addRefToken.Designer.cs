@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PollBasket.Api.Presistence;
 
@@ -11,9 +12,11 @@ using PollBasket.Api.Presistence;
 namespace PollBasket.Api.Presistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250930154755_addRefToken")]
+    partial class addRefToken
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -238,13 +241,6 @@ namespace PollBasket.Api.Presistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedByID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<DateOnly>("EndsAt")
                         .HasColumnType("date");
 
@@ -264,20 +260,10 @@ namespace PollBasket.Api.Presistence.Migrations
                         .HasMaxLength(1500)
                         .HasColumnType("nvarchar(1500)");
 
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UpdatedByID")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("CreatedByID");
 
                     b.HasIndex("Id")
                         .IsUnique();
-
-                    b.HasIndex("UpdatedByID");
 
                     b.ToTable("polls");
                 });
@@ -368,23 +354,6 @@ namespace PollBasket.Api.Presistence.Migrations
                         });
 
                     b.Navigation("RefreshTokens");
-                });
-
-            modelBuilder.Entity("PollBasket.Api.Entities.Poll", b =>
-                {
-                    b.HasOne("PollBasket.Api.Entities.ApplicationUser", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedByID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PollBasket.Api.Entities.ApplicationUser", "UpdatedBy")
-                        .WithMany()
-                        .HasForeignKey("UpdatedByID");
-
-                    b.Navigation("CreatedBy");
-
-                    b.Navigation("UpdatedBy");
                 });
 #pragma warning restore 612, 618
         }

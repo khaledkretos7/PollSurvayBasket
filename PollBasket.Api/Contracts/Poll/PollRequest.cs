@@ -7,4 +7,4 @@ public record PollRequest(
     DateOnly StartsAt,
     DateOnly EndsAt
     );
-
+    
